@@ -1,14 +1,12 @@
 javascript: (function() {
   if (typeof optimizely === 'undefined') {
     alert("Optimizely is not setup on this page");
-  } else { /* AB */
+  } else { 
     console.group("Optimizely");
     var e = optimizely.activeExperiments;
     var res = "";
-    //res += "Project Id: " + optimizely.getProjectId() + "\n";
     console.log("Project Id: " + optimizely.getProjectId() +" https://www.optimizely.com/s/do/redirect-to-impersonate?input=" +optimizely.getProjectId());
     console.log("Snippet revision: " + optimizely.revision);
-    //res += "Snippet revision: " + optimizely.revision + "\n";
     console.groupEnd();
     res += "\nAB Testing: \n";
     if (e.length > 0) {
@@ -18,7 +16,7 @@ javascript: (function() {
       }
     } else {
       res += "There are no Optimizely AB experiment running on this page\n";
-    } /* P13N */
+    } 
     
     res += "\nNew Optimizely:\n";
     console.group("New Optimizely");
@@ -31,8 +29,6 @@ javascript: (function() {
           var page = optimizely.get('state').getPageStates()[k];
           if (page.isActive) {
           	hasRunningPages = true;
-            //res += "Page '" + page.name + "' (" + page.id + ") is active\n";
-            //console.log("Page '" + page.name + "' (" + page.id + ") is active");
             console.groupCollapsed(page.name +" (" +page.id +")");
             console.log(page.name);
             console.log(page.id);
@@ -41,7 +37,6 @@ javascript: (function() {
               console.groupCollapsed("Tags");
               for (var property in page.metadata) {
                 if (page.metadata.hasOwnProperty(property)) {
-                  //res += '\t' + property + " : " + page.metadata[property] + "\n";
                   console.log(property + " : " + page.metadata[property]);
                 }
               }
@@ -52,12 +47,10 @@ javascript: (function() {
         });
         if (!hasRunningPages) {
           console.log("There are no active pages");
-        	//res += "There are no active pages\n";
         }
         console.groupEnd();
 
         console.group("Campaigns");
-        //res += "\n";
         var hasRunningCampaigns = false;
         var p13n = [];
         var ab = [];
@@ -72,18 +65,12 @@ javascript: (function() {
               var tmp = optimizely.get('data').campaigns[campaign.id].experiments[e];
               if (tmp.id == experiment.id) {
                 var type = optimizely.get('data').campaigns[campaign.id].policy == 'ordered' ? "P13N" : "AB";
-                //res += type +" Campaign '" + campaign.campaignName + "' (" + campaign.id + ") is active with experience '" + tmp.audienceName + "' (" + tmp.id + ")";
                 var variation = "";
                 if (optimizely.get('data').campaigns[campaign.id].policy == 'random') {
-                  //res += " and variation '" +campaign.variation.name +"' (" +campaign.variation.id +")";
-                  ab.push(campaign.campaignName + "' (" + campaign.id + ") is active with experience '" + tmp.audienceName + "' (" + tmp.id + ") and variation '" +campaign.variation.name +"' (" +campaign.variation.id +")");
+                  ab.push([campaign.campaignName, campaign.id,tmp.audienceName,tmp.id,campaign.variation.name,campaign.variation.id]);
                 } else {
-                  p13n.push(campaign.campaignName + "' (" + campaign.id + ") is active with experience '" + tmp.audienceName + "' (" + tmp.id + ")");
+                  p13n.push([campaign.campaignName ,campaign.id,tmp.audienceName,tmp.id]);
                 }
-                //res += "\n";
-                //var variation = optimizely.get('data').campaigns[campaign.id].policy == 'ordered' ? "" : campaign.variation.name;
-                //var variation = campaign.variation;
-                //res += type +" Campaign '" + campaign.campaignName + "' (" + campaign.id + ") is active with experience '" + tmp.audienceName + "' (" + tmp.id + ") and variation >>" +variation +"<<\n";
               }
             });
           }
@@ -91,21 +78,28 @@ javascript: (function() {
         if (!hasRunningCampaigns) {
         	res += "There are no active campaigns\n";
         }
-        console.log(ab);
         console.group("AB");
-        for (var i in ab) {
-          console.log(ab[i]);
+        for (var i=0; i < ab.length; i++) {
+          console.groupCollapsed(ab[i][0] +" (" +ab[i][1] +") / " +ab[i][2] +" (" +ab[i][3] +") / " +ab[i][4] +" (" +ab[i][5] +")");
+          console.log("Campaign " +ab[i][0] +" (" +ab[i][1] +") https://app.optimizely.com/v2/projects/" +optimizely.getProjectId() +"/campaigns/" +ab[i][1]);
+          console.log("Experience " +ab[i][2] +" (" +ab[i][3] +")");
+          console.log("Variation " +ab[i][4] +" (" +ab[i][5] +")");
+          console.groupEnd();
         }
         console.groupEnd();
         console.group("P13N");
-        console.log(p13n);
+        for (var i=0; i < p13n.length; i++) {
+          console.groupCollapsed(p13n[i][0] +" (" +p13n[i][1] +") / " +p13n[i][2] +" (" +p13n[i][3] +")");
+          console.log("Campaign " +p13n[i][0] +" (" +p13n[i][1] +") https://app.optimizely.com/v2/projects/" +optimizely.getProjectId() +"/campaigns/" +p13n[i][1]);
+          console.log("Experience " +p13n[i][2] +" (" +p13n[i][3] +")");
+          console.groupEnd();
+        }
         console.groupEnd();
         
       }
     } else {
-      res += "New Optimizely is not running on this page\n";
-    } /*window.alert(res);*/
+    } 
     console.groupEnd();
-    window.console.log("************************************\n" + res + "\n************************************\n");
   }
+  console.groupEnd();
 })()
