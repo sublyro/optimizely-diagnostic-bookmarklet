@@ -73,8 +73,6 @@ javascript: (function() {
             Object.keys(optimizely.get('data').campaigns[campaign.id].experiments).forEach(function(e, j) {
               var tmp = optimizely.get('data').campaigns[campaign.id].experiments[e]; 
               if (tmp.id == experiment.id) {
-                var type = optimizely.get('data').campaigns[campaign.id].policy == 'ordered' ? "P13N" : "AB";
-                var variation = "";
                 if (optimizely.get('data').campaigns[campaign.id].policy == 'random') {
                   ab.push([campaign.campaignName, campaign.id, tmp.audienceName, tmp.id, campaign.variation.name, campaign.variation.id]);
                 } else {
