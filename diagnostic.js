@@ -18,10 +18,9 @@ javascript: (function() {
       res += "There are no Optimizely AB experiment running on this page\n";
     } 
     
-    res += "\nNew Optimizely:\n";
-    console.group("New Optimizely");
-    
     if (typeof optimizely.get === 'function') {
+      res += "\nNew Optimizely:\n";
+      console.group("New Optimizely");
       console.group("Active Pages");
       if (optimizely.get('state') !== undefined) {
       	var hasRunningPages = false;
@@ -97,9 +96,9 @@ javascript: (function() {
         console.groupEnd();
         
       }
-    } else {
     } 
     console.groupEnd();
+    console.groupEnd();
   }
-  console.groupEnd();
+  
 })()
